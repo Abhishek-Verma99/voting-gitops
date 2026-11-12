@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: voting
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Abhishek-Verma99/voting-gitops.git
+    targetRevision: main
+    path: charts/voting
+    helm:
+      valueFiles:
+        - ../../environments/prod/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: voting-prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
