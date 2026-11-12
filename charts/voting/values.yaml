@@ -1,0 +1,89 @@
+vote:
+  replicas: 2
+  image:
+    repository: mastkub/voting-vote
+    tag: v1
+  port: 80
+  serviceAccount: vote-sa
+  config:
+    OPTION_A: Samosa
+    OPTION_B: Burger
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+result:
+  replicas: 1
+  image:
+    repository: mastkub/voting-result
+    tag: v1
+  port: 80
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+worker:
+  replicas: 1
+  image:
+    repository: mastkub/voting-worker
+    tag: v1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+redis:
+  image:
+    repository: redis
+    tag: 7-alpine
+  port: 6379
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+db:
+  image:
+    repository: postgres
+    tag: 15-alpine
+  port: 5432
+  storage: 1Gi
+  storageClass: local-path
+  secretName: db-secret
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 512Mi
+
+gateway:
+  name: voting-gw
+  namespace: traefik
+
+hostnames:
+  vote: vote.3.89.1.49.nip.io
+  result: result.3.89.1.49.nip.io
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 5
+  cpuTarget: 60
+
+pdb:
+  minAvailable: 1

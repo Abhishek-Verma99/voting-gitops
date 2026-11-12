@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote
+  labels:
+    {{- include "voting.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.vote.replicas }}
+  selector:
+    matchLabels:
+      app: vote
+  template:
+    metadata:
+      labels:
+        app: vote
+    spec:
+      serviceAccountName: {{ .Values.vote.serviceAccount }}
+      containers:
+        - name: vote
+          image: "{{ .Values.vote.image.repository }}:{{ .Values.vote.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.vote.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "voting.fullname" . }}-vote-config
+          resources:
+            {{- toYaml .Values.vote.resources | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.vote.port }}
+            periodSeconds: 2
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.vote.port }}
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.vote.port }}
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
