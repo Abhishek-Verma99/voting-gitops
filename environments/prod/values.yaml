@@ -1,0 +1,9 @@
+vote:
+  replicas: 2
+  image:
+    tag: v1
+result:
+  replicas: 1
+hostnames:
+  vote: vote.3.89.1.49.nip.io
+  result: result.3.89.1.49.nip.io
