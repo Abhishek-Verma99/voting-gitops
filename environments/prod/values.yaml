@@ -1,5 +1,5 @@
 vote:
-  replicas: 2
+  replicas: 3
   image:
     tag: v1
 result:
