@@ -1,7 +1,7 @@
 vote:
   replicas: 3
   image:
-    tag: v1
+    tag: v9-doesnotexist
 result:
   replicas: 1
 hostnames:
